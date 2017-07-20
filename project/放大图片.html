@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        img{
+            position: absolute;
+        }
+    </style>
+    <script src="js/imgZoom.js"></script>
+    <script>
+        window.onload = function () {
+            var img = document.querySelector("img");
+            img.onmousedown = function (event) {
+                //设置在IE8中的鼠标按下时捕获鼠标单击事件而起到取消浏览器默认样式的作用，以免拖动文字或图片时浏览器默认去搜索引擎中搜索
+                img.setCapture && img.setCapture();
+
+                event = event || window.event;
+                var ol = event.clientX - img.offsetLeft;
+                var ot = event.clientY - img.offsetTop;
+                document.onmousemove = function (event) {
+                    event = event || window.event;
+                    var left = event.clientX - ol;
+                    var top = event.clientY - ot ;
+                    img.style.left = left + "px";
+                    img.style.top = top + "px";
+                };
+                document.onmouseup = function () {
+                    document.onmousemove = null;
+                    document.onmouseup = null;
+
+                    //需在鼠标松开时取消捕获，否则点击任何地方都可以为图片捕获事件，不过鼠标右键松开时也可以自动取消捕获
+                    img.releaseCapture && img.releaseCapture();
+                };
+                return false;    //用于取消浏览器默认样式，一般浏览器都适用
+            };
+
+            //调用图片缩放函数
+            imgZoom(img,1350,270);
+
+        };
+    </script>
+</head>
+<body>
+    <img src="img/紫霞仙子.jpg" height="270"/>
+</body>
+</html>
